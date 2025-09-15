@@ -1,36 +1,31 @@
+<!DOCTYPE html>
 <html>
-
 <head>
-<meta http-equiv="Content-Type"
-content="text/html; charset=windows-1254">
-<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
-<title>Ürün Kataloðu</title>
-<style>
+  <title>ÃœrÃ¼n KataloÄŸu</title>
+  <style>
+    input, select { margin: 10px; padding: 5px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  </style>
 </head>
-
 <body>
+  <h2>ÃœrÃ¼n KataloÄŸu</h2>
 
-<p>input, select { margin: 10px; padding: 5px; } table {
-border-collapse: collapse; width: 100%; margin-top: 20px; } th,
-td { border: 1px solid #ccc; padding: 8px; text-align: left; } </style> </p>
+  <!-- Arama ve Filtre -->
+  <input type="text" id="searchInput" placeholder="ÃœrÃ¼n adÄ± ara...">
+  <select id="categoryFilter">
+    <option value="">TÃ¼m Kategoriler</option>
+  </select>
 
-<h2>Ürün Kataloðu</h2>
-<!-- Arama ve Filtre -->
-<p><input type="text" size="20" id="searchInput"
-placeholder="Ürün adý ara..."> <select size="1"
-id="categoryFilter">
-    <option value>Tüm Kategoriler</option>
-</select> </p>
+  <table id="dataTable"></table>
 
-<table border="0" id="dataTable">
-</table>
-<script>
+  <script>
     const rawData = JSON.parse(localStorage.getItem('excelData'));
     const table = document.getElementById('dataTable');
     const searchInput = document.getElementById('searchInput');
     const categoryFilter = document.getElementById('categoryFilter');
 
-    // Kategori filtre seçeneklerini doldur
+    // Kategori filtre seÃ§eneklerini doldur
     const categories = [...new Set(rawData.map(item => item.Kategori))];
     categories.forEach(cat => {
       const option = document.createElement('option');
@@ -39,7 +34,7 @@ id="categoryFilter">
       categoryFilter.appendChild(option);
     });
 
-    // Tabloyu oluþtur
+    // Tabloyu oluÅŸtur
     function renderTable(data) {
       table.innerHTML = '';
       const headers = Object.keys(data[0]);
@@ -63,7 +58,7 @@ id="categoryFilter">
       const searchTerm = searchInput.value.toLowerCase();
       const selectedCategory = categoryFilter.value;
       const filtered = rawData.filter(item => {
-        const matchesSearch = item.ÜrünAdý.toLowerCase().includes(searchTerm);
+        const matchesSearch = item.ÃœrÃ¼nAdÄ±.toLowerCase().includes(searchTerm);
         const matchesCategory = selectedCategory === '' || item.Kategori === selectedCategory;
         return matchesSearch && matchesCategory;
       });
@@ -73,7 +68,7 @@ id="categoryFilter">
     searchInput.addEventListener('input', filterData);
     categoryFilter.addEventListener('change', filterData);
 
-    // Ýlk tablo render
+    // Ä°lk tablo render
     renderTable(rawData);
   </script>
 </body>
