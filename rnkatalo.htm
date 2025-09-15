@@ -1,0 +1,80 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=windows-1254">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Ürün Kataloðu</title>
+<style>
+</head>
+
+<body>
+
+<p>input, select { margin: 10px; padding: 5px; } table {
+border-collapse: collapse; width: 100%; margin-top: 20px; } th,
+td { border: 1px solid #ccc; padding: 8px; text-align: left; } </style> </p>
+
+<h2>Ürün Kataloðu</h2>
+<!-- Arama ve Filtre -->
+<p><input type="text" size="20" id="searchInput"
+placeholder="Ürün adý ara..."> <select size="1"
+id="categoryFilter">
+    <option value>Tüm Kategoriler</option>
+</select> </p>
+
+<table border="0" id="dataTable">
+</table>
+<script>
+    const rawData = JSON.parse(localStorage.getItem('excelData'));
+    const table = document.getElementById('dataTable');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    // Kategori filtre seçeneklerini doldur
+    const categories = [...new Set(rawData.map(item => item.Kategori))];
+    categories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat;
+      option.textContent = cat;
+      categoryFilter.appendChild(option);
+    });
+
+    // Tabloyu oluþtur
+    function renderTable(data) {
+      table.innerHTML = '';
+      const headers = Object.keys(data[0]);
+      const headerRow = table.insertRow();
+      headers.forEach(h => {
+        const cell = headerRow.insertCell();
+        cell.textContent = h;
+      });
+
+      data.forEach(item => {
+        const row = table.insertRow();
+        headers.forEach(h => {
+          const cell = row.insertCell();
+          cell.textContent = item[h];
+        });
+      });
+    }
+
+    // Filtreleme ve arama
+    function filterData() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedCategory = categoryFilter.value;
+      const filtered = rawData.filter(item => {
+        const matchesSearch = item.ÜrünAdý.toLowerCase().includes(searchTerm);
+        const matchesCategory = selectedCategory === '' || item.Kategori === selectedCategory;
+        return matchesSearch && matchesCategory;
+      });
+      renderTable(filtered);
+    }
+
+    searchInput.addEventListener('input', filterData);
+    categoryFilter.addEventListener('change', filterData);
+
+    // Ýlk tablo render
+    renderTable(rawData);
+  </script>
+</body>
+</html>
