@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arama Sayfası</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    li:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h2>Ürün Arama</h2>
+  <input type="text" id="arama" placeholder="Ürün adı girin...">
+  <ul id="liste"></ul>
+
+  <script>
+    fetch('veri.json')
+      .then(res => res.json())
+      .then(data => {
+        const arama = document.getElementById('arama');
+        const liste = document.getElementById('liste');
+
+        function filtrele() {
+          const kelime = arama.value.toLowerCase();
+          liste.innerHTML = '';
+          data
+            .filter(item => item.isim.toLowerCase().includes(kelime))
+            .forEach(item => {
+              const li = document.createElement('li');
+              li.textContent = item.isim;
+              liste.appendChild(li);
+            });
+        }
+
+        arama.addEventListener('input', filtrele);
+        filtrele(); // Sayfa ilk yüklendiğinde tüm listeyi göster
+      })
+      .catch(err => {
+        document.getElementById('liste').innerHTML = '<li>veri.json yüklenemedi.</li>';
+        console.error('Hata:', err);
+      });
+  </script>
+</body>
+</html>
